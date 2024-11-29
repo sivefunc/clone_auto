@@ -60,6 +60,14 @@ Written by a human""")
             required=True
             )
 
+    parser.add_argument(
+            '--path',
+            help="Path where the repos are going to be cloned",
+            metavar=None,
+            type=str,
+            default="."
+            )
+
     # No arguments given, I just decided to leave it here.
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)

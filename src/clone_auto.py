@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 import requests
@@ -57,8 +58,11 @@ def main():
     terminal = term_args()
     [user] = terminal.user
     for platform in terminal.platforms:
-        for repo in PLATFORMS[platform](user):
-            print(repo)
+        save_path = os.path.join(terminal.path, platform)
+        os.makedirs(save_path, exist_ok = True)
+        os.chdir(save_path)
+        for repo_url in PLATFORMS[platform](user):
+            clone_repo(repo_url)
 
 if __name__ == '__main__':
     main()
