@@ -21,6 +21,23 @@ def get_gitlab_repos(user: str, *args, **kwargs) -> list:
     repos = [repo['http_url_to_repo'] for repo in user_json]
     return repos
 
+def get_codeberg_repos(user: str, *args, **kwargs) -> list:
+    """Public Gitlab repositories from a user
+    """
+    api = "https://codeberg.org/api/v1/users/USER/repos"
+    try:
+        response = requests.get(api.replace("USER", user), *args, **kwargs)
+        response.raise_for_status()
+    
+    except requests.exceptions.RequestException as error:
+        print(error)
+        return []
+
+    user_json = response.json()
+
+    repos = [repo['clone_url'] for repo in user_json]
+    return repos
+
 def clone_repo(git_url: str) -> bool:
     """git clone git_url
     """
@@ -31,8 +48,12 @@ def clone_repo(git_url: str) -> bool:
         print(c.decode('ascii'), end="")
 
 def main():
+    user = 'sivefunc'
     for repo in get_gitlab_repos('sivefunc'):
-        clone_repo(repo)
+        print(repo)
+
+    for repo in get_codeberg_repos('sivefunc'):
+        print(repo)
 
 if __name__ == '__main__':
     main()
