@@ -24,7 +24,7 @@ def get_gitlab_repos(user: str, *args, **kwargs) -> list:
     return repos
 
 def get_codeberg_repos(user: str, *args, **kwargs) -> list:
-    """Public Gitlab repositories from a user
+    """Public codeberg repositories from a user
     """
     api = "https://codeberg.org/api/v1/users/USER/repos"
     try:
