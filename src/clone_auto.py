@@ -3,6 +3,7 @@ import subprocess
 import requests
 
 from _version import __version__
+from term_args import term_args
 
 def get_gitlab_repos(user: str, *args, **kwargs) -> list:
     """Public Gitlab Repositories from a user
@@ -47,13 +48,17 @@ def clone_repo(git_url: str) -> bool:
     for c in iter(lambda: process.stdout.read(1), b""):
         print(c.decode('ascii'), end="")
 
-def main():
-    user = 'sivefunc'
-    for repo in get_gitlab_repos('sivefunc'):
-        print(repo)
+PLATFORMS = {
+        'gitlab': get_gitlab_repos,
+        'codeberg': get_codeberg_repos
+        }
 
-    for repo in get_codeberg_repos('sivefunc'):
-        print(repo)
+def main():
+    terminal = term_args()
+    [user] = terminal.user
+    for platform in terminal.platforms:
+        for repo in PLATFORMS[platform](user):
+            print(repo)
 
 if __name__ == '__main__':
     main()
