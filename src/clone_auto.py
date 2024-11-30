@@ -6,10 +6,9 @@ import requests
 from _version import __version__
 from term_args import term_args
 
-def get_gitlab_repos(user: str, *args, **kwargs) -> list:
-    """Public Gitlab Repositories from a user
+def get_repo(api: str, user: str, json_keyword: str, *args, **kwargs) -> list:
+    """Public repositories from a user on a given platform API
     """
-    api = "https://gitlab.com/api/v4/users/USER/projects"
     try:
         response = requests.get(api.replace("USER", user), *args, **kwargs)
         response.raise_for_status()
@@ -20,41 +19,7 @@ def get_gitlab_repos(user: str, *args, **kwargs) -> list:
 
     user_json = response.json()
 
-    repos = [repo['http_url_to_repo'] for repo in user_json]
-    return repos
-
-def get_codeberg_repos(user: str, *args, **kwargs) -> list:
-    """Public codeberg repositories from a user
-    """
-    api = "https://codeberg.org/api/v1/users/USER/repos"
-    try:
-        response = requests.get(api.replace("USER", user), *args, **kwargs)
-        response.raise_for_status()
-    
-    except requests.exceptions.RequestException as error:
-        print(error)
-        return []
-
-    user_json = response.json()
-
-    repos = [repo['clone_url'] for repo in user_json]
-    return repos
-
-def get_github_repos(user: str, *args, **kwargs) -> list:
-    """Public Github Repositories from a user
-    """
-    api = "https://api.github.com/users/USER/repos"
-    try:
-        response = requests.get(api.replace("USER", user), *args, **kwargs)
-        response.raise_for_status()
-    
-    except requests.exceptions.RequestException as error:
-        print(error)
-        return []
-
-    user_json = response.json()
-
-    repos = [repo['clone_url'] for repo in user_json]
+    repos = [repo[json_keyword] for repo in user_json]
     return repos
 
 def clone_repo(git_url: str) -> bool:
@@ -67,9 +32,18 @@ def clone_repo(git_url: str) -> bool:
         print(c.decode('ascii'), end="")
 
 PLATFORMS = {
-        'gitlab': get_gitlab_repos,
-        'codeberg': get_codeberg_repos,
-        'github': get_github_repos
+        'gitlab': [
+            "https://gitlab.com/api/v4/users/USER/projects",
+            "http_url_to_repo"
+            ],
+        'codeberg': [
+            "https://codeberg.org/api/v1/users/USER/repos",
+            "clone_url"
+            ],
+        'github': [
+            "https://api.github.com/users/USER/repos",
+            "clone_url"
+            ]
         }
 
 def main():
@@ -79,7 +53,12 @@ def main():
         save_path = os.path.join(terminal.path, platform)
         os.makedirs(save_path, exist_ok = True)
         os.chdir(save_path)
-        for repo_url in PLATFORMS[platform](user):
+        api, json_keyword = PLATFORMS[platform]
+        for repo_url in get_repo(
+                api,
+                user,
+                json_keyword,
+                timeout=terminal.timeout):
             clone_repo(repo_url)
 
 if __name__ == '__main__':

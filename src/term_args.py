@@ -68,6 +68,14 @@ Written by a human""")
             default="."
             )
 
+    parser.add_argument(
+            '-t', '--timeout',
+            help="Time to wait for JSON response on platforms",
+            metavar=None,
+            type=float,
+            default=10
+            )
+
     # No arguments given, I just decided to leave it here.
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
