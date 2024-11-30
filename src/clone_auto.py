@@ -49,8 +49,9 @@ PLATFORMS = {
 def main():
     terminal = term_args()
     [user] = terminal.user
+    path = os.path.abspath(terminal.path)
     for platform in terminal.platforms:
-        save_path = os.path.join(terminal.path, platform)
+        save_path = os.path.join(path, platform)
         os.makedirs(save_path, exist_ok = True)
         os.chdir(save_path)
         api, json_keyword = PLATFORMS[platform]
