@@ -20,6 +20,7 @@ classifiers = [
 description = "Clone all public repositories from a user in a GIT server"
 requires-python = ">=3.11"
 
+keywords = ['linux', 'python3', 'git', 'script']
 dependencies = [
     "requests==2.32.3"
 ]
