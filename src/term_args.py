@@ -56,7 +56,7 @@ Written by a human""")
             metavar=None,
             type=str,
             nargs='+',
-            choices=['gitlab', 'codeberg'],
+            choices=['gitlab', 'codeberg', 'github'],
             required=True
             )
 

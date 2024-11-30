@@ -40,6 +40,23 @@ def get_codeberg_repos(user: str, *args, **kwargs) -> list:
     repos = [repo['clone_url'] for repo in user_json]
     return repos
 
+def get_github_repos(user: str, *args, **kwargs) -> list:
+    """Public Github Repositories from a user
+    """
+    api = "https://api.github.com/users/USER/repos"
+    try:
+        response = requests.get(api.replace("USER", user), *args, **kwargs)
+        response.raise_for_status()
+    
+    except requests.exceptions.RequestException as error:
+        print(error)
+        return []
+
+    user_json = response.json()
+
+    repos = [repo['clone_url'] for repo in user_json]
+    return repos
+
 def clone_repo(git_url: str) -> bool:
     """git clone git_url
     """
@@ -51,7 +68,8 @@ def clone_repo(git_url: str) -> bool:
 
 PLATFORMS = {
         'gitlab': get_gitlab_repos,
-        'codeberg': get_codeberg_repos
+        'codeberg': get_codeberg_repos,
+        'github': get_github_repos
         }
 
 def main():
