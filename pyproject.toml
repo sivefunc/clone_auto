@@ -10,6 +10,13 @@ authors = [
   { name="sivefunc", email="sivefunc@tuta.io" },
 ]
 
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+
 description = "Clone all public repositories from a user in a GIT server"
 requires-python = ">=3.11"
 
